@@ -5,7 +5,40 @@ This library is a set of extension attributes for Entity Framework Core that all
 TODO
 
 ## Concurrency
-TODO
+The ConcurrencyCheckkAttribute can be used on an int, long, guid, or byte array property to specify that it be used as the concurrency token. SQL Server will manage the byte array as a built in timestamp field. However on other database types this is not implemented. Also the int, long, and guid options are managed by the framework and are database independent.
+
+```
+public class Customer : IEntity
+{
+    [PrimaryKey]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    public string Name { get; set; }
+
+    [Required]
+    [VersionField]
+    public int Version { get; protected set; }
+}
+
+public class UserAccount : IEntity
+{
+    [PrimaryKey]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    public string Name { get; set; }
+
+    [Required]
+    [VersionField]
+    public Guid Version { get; protected set; }
+}
+
+```
 
 ## DefaultValue (Special)
 TODO
@@ -52,7 +85,7 @@ The VersionFieldAttribute allows an integer property to be incremented on each s
 public class Customer : IEntity
 {
     [PrimaryKey]
-	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ID { get; set; }
 
     [StringLength(50)]
