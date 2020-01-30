@@ -45,7 +45,7 @@ public class Customer : AuditableBaseEntity
 ```
 
 ## Concurrency
-The ConcurrencyCheckkAttribute can be used on an int, long, guid, or byte array property to specify that it be used as the concurrency token. SQL Server will manage the byte array as a built in timestamp field. However on other database types this is not implemented. Also the int, long, and guid options are managed by the framework and are database independent.
+The ConcurrencyCheckAttribute can be used on an int, long, guid, or byte array property to specify that it be used as the concurrency token. SQL Server will manage the byte array as a built in timestamp field. However on other database types this is not implemented. Also the int, long, and guid options are managed by the framework and are database independent.
 
 ```
 public class Customer : IEntity
@@ -76,6 +76,23 @@ public class UserAccount : IEntity
     [Required]
     [VersionField]
     public Guid Version { get; protected set; }
+}
+
+public class SaleItem : IEntity
+{
+    [PrimaryKey]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    public string Name { get; set; }
+
+    //SQL Server specific as this is handled by database not in code
+    [Required]
+    [VersionField]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public byte[] Version { get; protected set; }
 }
 
 ```
