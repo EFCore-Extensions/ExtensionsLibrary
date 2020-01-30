@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <StartupObject>ConsoleApp1.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EFCore.Extensions.Scripting\EFCore.Extensions.Scripting.csproj" />
+    <ProjectReference Include="..\EFCore.Extensions\EFCore.Extensions.csproj" />
+    <ProjectReference Include="..\EFCoreTest.EFDAL\EFCoreTest.EFDAL.csproj" />
+  </ItemGroup>
+
+</Project>
