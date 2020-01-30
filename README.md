@@ -90,7 +90,8 @@ TODO
 TODO
 
 ## Soft Delete
-Hello
+A soft delete allows an entity to be marked as deleted in the database using a Boolean flag instead of actually removing it. The where filter is implied, so there is no reason to include it. The snippet below marks the first item as deleted and saves the context. The next line selects all items from the table with no where clause. The soft deleted item is not in the list, even though it is still in the database.
+
 ```
 //This entity implements the ISoftDeleted interface and has a IsDeleted property
 public class Car : ISoftDeleted
@@ -112,7 +113,7 @@ using (var context = new DataContext(connectionString))
     car.IsDeleted = true;
     context.SaveChanges();
     
-    //Select from database with no where and the item is not retrieved
+    //Select from table with no where clause and the item is not retrieved
     var list = context.Car.ToList();
 }
 
