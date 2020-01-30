@@ -87,7 +87,26 @@ TODO
 TODO
 
 ## Composite Index
-TODO
+Adding a composite index with more than one property is easy with the IndexedAttribute. Define a name for the grouping and each property has an order that defines its position in the index. The following snippet will create a single index on "FirstName" and "LastName", in that order. The property order is important for how an index is used for searching.
+
+```
+public class Customer : AuditableBaseEntity
+{
+    [PrimaryKey]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    [Indexed("MyIndex", 1)]
+    public string FirstName { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    [Indexed("MyIndex", 2)]
+    public string LastName { get; set; }
+}
+```
 
 ## Soft Delete
 A soft delete allows an entity to be marked as deleted in the database using a Boolean flag instead of actually removing it. The where filter is implied, so there is no reason to include it. The snippet below marks the first item as deleted and saves the context. The next line selects all items from the table with no where clause. The soft deleted item is not in the list, even though it is still in the database.
