@@ -59,8 +59,8 @@ public class Customer : IEntity
     public string Name { get; set; }
 
     [Required]
-    [VersionField]
-    public int Version { get; protected set; }
+    [ConcurrencyCheck]
+    public int MyToken { get; protected set; }
 }
 
 public class UserAccount : IEntity
@@ -74,8 +74,8 @@ public class UserAccount : IEntity
     public string Name { get; set; }
 
     [Required]
-    [VersionField]
-    public Guid Version { get; protected set; }
+    [ConcurrencyCheck]
+    public Guid MyToken { get; protected set; }
 }
 
 public class SaleItem : IEntity
@@ -90,9 +90,9 @@ public class SaleItem : IEntity
 
     //SQL Server specific as this is handled by database not in code
     [Required]
-    [VersionField]
+    [ConcurrencyCheck]
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public byte[] Version { get; protected set; }
+    public byte[] MyToken { get; protected set; }
 }
 
 ```
