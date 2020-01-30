@@ -46,7 +46,24 @@ using (var context = new DataContext(connectionString))
 ```
 
 ## Version Property
-TODO
+The VersionFieldAttribute allows an integer property to be incremented on each save. Each time an entity is modified in any way and saved back to the database, this property will have its value incremented automatically.
+
+```
+public class Customer : IEntity
+{
+    [PrimaryKey]
+	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    public string Name { get; set; }
+
+    [Required]
+    [VersionField]
+    public int Version { get; protected set; }
+}
+```
 
 ## Seed Data
 TODO
