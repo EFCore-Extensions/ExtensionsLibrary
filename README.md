@@ -2,7 +2,47 @@
 This library is a set of extension attributes for Entity Framework Core that allows additional functionality to be defined in a code first model.
 
 ## Audit Properties
-TODO
+Audit properties are useful to track when a database row was created and modified. There are four pre-defined audit fields: CreatedBy, CreatedDate, ModifiedBy, and ModifiedDate. One or more of these properties can be added to any entity. When the appropriate attribute is on a field, it becomes an audit field and is tracked automatically.
+
+```
+public class Customer : IEntity
+{
+    [PrimaryKey]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    public string Name { get; set; }
+
+    [AuditCreatedBy]
+    public virtual string CreatedBy { get; protected set; }
+
+    [AuditCreatedDate]
+    public virtual DateTime CreatedDate { get; protected set; }
+
+    [AuditModifiedBy]
+    public virtual string ModifiedBy { get; protected set; }
+
+    [AuditModifiedDate]
+    public virtual DateTime ModifiedDate { get; protected set; }
+}
+```
+
+Alternatively, an entity can derive from "AuditableBaseEntity" and inherit all of this functionality. The following is functionally equivalent to the class above.
+
+```
+public class Customer : AuditableBaseEntity
+{
+    [PrimaryKey]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int ID { get; set; }
+
+    [StringLength(50)]
+    [Required]
+    public string Name { get; set; }
+}
+```
 
 ## Concurrency
 The ConcurrencyCheckkAttribute can be used on an int, long, guid, or byte array property to specify that it be used as the concurrency token. SQL Server will manage the byte array as a built in timestamp field. However on other database types this is not implemented. Also the int, long, and guid options are managed by the framework and are database independent.
