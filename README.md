@@ -1,5 +1,5 @@
 # Entity Framework Core Extensions
-This library is a set of extension attributes for Entity Framework Core that allows additional functionality to be defined in a code first model.
+This library is a set of extension attributes for Entity Framework Core that allows additional functionality to be defined in a code first model. The default attribute set allows for the decoration of a code model but is lacking in some more advanced functionality. This extension library allows for a more explcit, advanced model syntax that extends Entity Framework Core.
 
 ## Audit Properties
 Audit properties are useful to track when a database row was created and modified. There are four pre-defined audit fields: CreatedBy, CreatedDate, ModifiedBy, and ModifiedDate. One or more of these properties can be added to any entity. When the appropriate attribute is on a field, it becomes an audit field and is tracked automatically.
@@ -163,3 +163,7 @@ TODO
 
 ## Multi-tenancy
 TODO
+
+## Class Diagram
+TODO
+
