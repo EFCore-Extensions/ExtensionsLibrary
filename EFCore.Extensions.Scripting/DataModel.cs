@@ -111,7 +111,7 @@ namespace EFCore.Extensions.Scripting
                                 newProperty.PropertyType = PropertyTypeConstants.AuditModifiedDate;
                             //else if (a is Attributes.AuditTimestampAttribute)
                             //    newProperty.PropertyType = PropertyTypeConstants.AuditTimestamp;
-                            else if (a is Attributes.StringLengthUnboundedAttribute)
+                            else if (a is Attributes.MaxLengthUnboundedAttribute)
                                 newProperty.Length = 0;
                             else if (a is Attributes.NullableAttribute)
                                 newProperty.Nullable = (a as Attributes.NullableAttribute).AllowNull;

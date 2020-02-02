@@ -18,7 +18,7 @@ namespace EFCoreTest.EFDAL.Entity
         [Unicode]
         public string Name { get; set; }
 
-        [StringLengthUnbounded]
+        [MaxLengthUnbounded]
         [Nullable(true)]
         public string Data { get; set; }
 

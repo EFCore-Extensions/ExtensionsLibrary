@@ -216,11 +216,12 @@ namespace EFCore.Extensions
                         modelBuilder.Entity(tableType.FullName).Property(column.Name).ValueGeneratedNever();
 
                     #region Get string length attributes
-                    var stringLengths = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<StringLengthAttribute>() != null)
-                        .Select(x => x.GetAttrWithProp<StringLengthAttribute>())
+                    var stringLengths = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<MaxLengthAttribute>() != null)
+                        .Select(x => x.GetAttrWithProp<MaxLengthAttribute>())
                         .ToList();
-                    var stringUnboundedLengths = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<StringLengthUnboundedAttribute>() != null)
-                        .Select(x => x.GetAttrWithProp<StringLengthUnboundedAttribute>())
+                    var stringUnboundedLengths = tableType.Props(false)
+                        .Where(x => !x.NotMapped() && x.GetAttr<MaxLengthUnboundedAttribute>() != null && x.PropertyType == typeof(string))
+                        .Select(x => x.GetAttrWithProp<MaxLengthUnboundedAttribute>())
                         .ToList();
                     #endregion
 
@@ -472,14 +473,14 @@ namespace EFCore.Extensions
                         .ToList();
 
                     //Process single column indexes
-                    foreach (var index in indexSets.Where(x => string.IsNullOrEmpty(x.Item2.Name)))
+                    foreach (var index in indexSets.Where(x => string.IsNullOrEmpty(x.Item1.Name)))
                     {
-                        var q = modelBuilder.Entity(tableType.FullName).HasIndex(index.Item1.Name);
+                        var q = modelBuilder.Entity(tableType.FullName).HasIndex(index.Item2.Name);
                         if (index.Item1.IsUnique) q.IsUnique();
                     }
 
                     //Process multi-column indexes
-                    foreach (var indexSet in indexSets.Where(x => !string.IsNullOrEmpty(x.Item2.Name))
+                    foreach (var indexSet in indexSets.Where(x => !string.IsNullOrEmpty(x.Item1.Name))
                         .GroupBy(x => x.Item1.Name)
                         .Select(x => new { x.Key, Values = x })
                         .ToList())
@@ -506,7 +507,7 @@ namespace EFCore.Extensions
                             if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
                             {
                                 //Only set string length if it is undefined
-                                if (!prop.CustomAttributes.Any(x => x.AttributeType == typeof(StringLengthAttribute) || x.AttributeType == typeof(StringLengthUnboundedAttribute)))
+                                if (!prop.CustomAttributes.Any(x => x.AttributeType == typeof(MaxLengthAttribute) || x.AttributeType == typeof(MaxLengthUnboundedAttribute)))
                                 {
                                     modelBuilder.Entity(tableType.FullName).Property(prop.Name).HasMaxLength(50);
                                     auditAddedImplicitLengths++;
@@ -529,7 +530,7 @@ namespace EFCore.Extensions
                             if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
                             {
                                 //Only set string length if it is undefined
-                                if (!prop.CustomAttributes.Any(x => x.AttributeType == typeof(StringLengthAttribute) || x.AttributeType == typeof(StringLengthUnboundedAttribute)))
+                                if (!prop.CustomAttributes.Any(x => x.AttributeType == typeof(MaxLengthAttribute) || x.AttributeType == typeof(MaxLengthUnboundedAttribute)))
                                 {
                                     modelBuilder.Entity(tableType.FullName).Property(prop.Name).HasMaxLength(50);
                                     auditAddedImplicitLengths++;
@@ -551,9 +552,15 @@ namespace EFCore.Extensions
                             modelBuilder.Entity(tableType.FullName).Property(prop.Name).IsRequired().IsConcurrencyToken(true).IsRowVersion();
                             if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
                             {
-                                modelBuilder.Entity(tableType.FullName).Property(prop.Name).HasMaxLength(50);
                                 if (tableType.Props(false).Any(x => x.Name == prop.Name && x.PropertyType == typeof(string)))
+                                {
+                                    modelBuilder.Entity(tableType.FullName).Property(prop.Name).HasMaxLength(50);
                                     auditAddedImplicitLengths++;
+                                }
+                                else
+                                {
+                                    modelBuilder.Entity(tableType.FullName).Property(prop.Name);
+                                }
                             }
                         }
 
@@ -574,7 +581,7 @@ namespace EFCore.Extensions
                     #region Verify the same property does not have both string length and unbounded
                     if (stringLengths.Select(x => x.Item2).Concat(stringUnboundedLengths.Select(x => x.Item2)).Distinct().Count() != stringLengths.Count + stringUnboundedLengths.Count)
                     {
-                        throw new Exception($"The entity {tableType.Name} has a property marked with a StringLengthAttribute and StringLengthUnboundedAttribute.");
+                        throw new Exception($"The entity {tableType.Name} has a property marked with a MaxLength and MaxLengthUnbounded attribute.");
                     }
                     //TODO: Verify "char" has length of 1
                     #endregion
@@ -583,7 +590,8 @@ namespace EFCore.Extensions
                     var allStringCount = tableType.Props(false).Where(x => !x.NotMapped() && x.PropertyType == typeof(string)).Count();
                     if (allStringCount != stringLengths.Count + stringUnboundedLengths.Count + auditAddedImplicitLengths + skipStringLengthChecks)
                     {
-                        throw new Exception($"The entity {tableType.Name} must have all string properties decorated with StringLengthAttribute or StringLengthUnboundedAttribute.");
+                        var sss = $"{allStringCount}|{stringLengths.Count}|{stringUnboundedLengths.Count}|{auditAddedImplicitLengths}|{skipStringLengthChecks}";
+                        throw new Exception($"The entity {tableType.Name} must have all string properties decorated with StringLengthAttribute or StringLengthUnboundedAttribute." + sss);
                     }
                     #endregion
 
