@@ -20,6 +20,7 @@ namespace EFCore.Extensions
     {
         protected string _connectionString = null;
         protected Random _rnd = new Random();
+        protected static List<string> _dbGeneratedProperties = new List<string>();
 
         /// <summary>
         /// Used for model cache management under certain conditions
@@ -372,7 +373,16 @@ namespace EFCore.Extensions
 
                     #endregion
 
-                    #region Blob
+                    #region Concurrency
+
+                    var dbGeneratedInfos = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<DatabaseGeneratedAttribute>() != null)
+                            .Select(x => x.GetAttrWithProp<DatabaseGeneratedAttribute>())
+                            .ToList();
+
+                    foreach(var item in dbGeneratedInfos)
+                    {
+                        _dbGeneratedProperties.Add($"{tableType.FullName}.{item.Item2.Name}");
+                    }
 
                     var concurrencyInfos = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<ConcurrencyCheckAttribute>() != null)
                             .Select(x => x.GetAttrWithProp<ConcurrencyCheckAttribute>())
@@ -549,7 +559,12 @@ namespace EFCore.Extensions
                         var attr5 = prop.GetAttr<ConcurrencyCheckAttribute>();
                         if (attr5 != null)
                         {
-                            modelBuilder.Entity(tableType.FullName).Property(prop.Name).IsRequired().IsConcurrencyToken(true).IsRowVersion();
+                            var propName = $"{tableType.FullName}.{prop.Name}";
+                            if (_dbGeneratedProperties.Contains(propName))
+                                modelBuilder.Entity(tableType.FullName).Property(prop.Name).IsRequired().IsConcurrencyToken(true).IsRowVersion();
+                            else
+                                modelBuilder.Entity(tableType.FullName).Property(prop.Name).IsRequired().IsConcurrencyToken(true);
+
                             if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
                             {
                                 if (tableType.Props(false).Any(x => x.Name == prop.Name && x.PropertyType == typeof(string)))
@@ -714,21 +729,33 @@ namespace EFCore.Extensions
             var attr = entity.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .Where(x => x.GetCustomAttributes(true).Any(z => z.GetType() == attrType))
                 .FirstOrDefault();
+
             if (attr != null)
             {
                 var property = entity.GetType().GetProperty(attr.Name, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                var value = property.GetValue(entity);
-                if (value is int)
+                var propName = $"{entity.GetType().FullName}.{property.Name}";
+                if (_dbGeneratedProperties.Contains(propName))
+                    return;
+
+                if (property.PropertyType == typeof(int))
                 {
+                    var value = property.GetValue(entity);
                     SetPropertyByName(entity, property.Name, ((int)value) + 1);
                 }
-                else if (value is long)
+                else if (property.PropertyType == typeof(long))
                 {
+                    var value = property.GetValue(entity);
                     SetPropertyByName(entity, property.Name, ((long)value) + 1);
                 }
-                else if (value is Guid)
+                else if (property.PropertyType == typeof(Guid))
                 {
                     SetPropertyByName(entity, property.Name, Guid.NewGuid());
+                }
+                else if (property.PropertyType == typeof(byte[]))
+                {
+                    //TODO: Just set 4 bytes for now. Assume at least this big.
+                    var newValue = new byte[] { (byte)_rnd.Next(0, 255), (byte)_rnd.Next(0, 255), (byte)_rnd.Next(0, 255), (byte)_rnd.Next(0, 255) };
+                    SetPropertyByName(entity, property.Name, newValue);
                 }
                 else
                     throw new Exception("The concurrency token cannot be set.");
