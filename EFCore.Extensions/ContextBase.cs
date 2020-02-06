@@ -249,7 +249,7 @@ namespace EFCore.Extensions
                         {
                             //set the TenantId field
                             modelBuilder.Entity(tableType.FullName).Property(userAttr.Name).IsRequired();
-                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == userAttr.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == userAttr.Name))
+                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == userAttr.Name) && !stringLengths.Any(x => x.Item2.Name == userAttr.Name))
                             {
                                 modelBuilder.Entity(tableType.FullName).Property(userAttr.Name).HasMaxLength(50);
                                 auditAddedImplicitLengths++;
@@ -354,7 +354,7 @@ namespace EFCore.Extensions
 
                     foreach (var item in unicodeInfos)
                     {
-                        modelBuilder.Entity(tableType.FullName).Property(item.Item2.Name).HasAnnotation("IsUnicode", item.Item1.IsUnicode);
+                        modelBuilder.Entity(tableType.FullName).Property(item.Item2.Name).IsUnicode(item.Item1.IsUnicode).HasAnnotation("IsUnicode", item.Item1.IsUnicode);
                     }
 
                     #endregion
@@ -409,7 +409,7 @@ namespace EFCore.Extensions
 
                     #endregion
 
-                    #region XmlField
+                    #region UniqueField
 
                     var uniqueInfos = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<UniqueFieldAttribute>() != null)
                             .Select(x => x.GetAttrWithProp<UniqueFieldAttribute>())
@@ -514,7 +514,7 @@ namespace EFCore.Extensions
                         if (attr1 != null)
                         {
                             modelBuilder.Entity(tableType.FullName).Property(prop.Name);
-                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
+                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringLengths.Any(x => x.Item2.Name == prop.Name))
                             {
                                 //Only set string length if it is undefined
                                 if (!prop.CustomAttributes.Any(x => x.AttributeType == typeof(MaxLengthAttribute) || x.AttributeType == typeof(MaxLengthUnboundedAttribute)))
@@ -537,7 +537,7 @@ namespace EFCore.Extensions
                         if (attr3 != null)
                         {
                             modelBuilder.Entity(tableType.FullName).Property(prop.Name);
-                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
+                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringLengths.Any(x => x.Item2.Name == prop.Name))
                             {
                                 //Only set string length if it is undefined
                                 if (!prop.CustomAttributes.Any(x => x.AttributeType == typeof(MaxLengthAttribute) || x.AttributeType == typeof(MaxLengthUnboundedAttribute)))
@@ -565,7 +565,7 @@ namespace EFCore.Extensions
                             else
                                 modelBuilder.Entity(tableType.FullName).Property(prop.Name).IsRequired().IsConcurrencyToken(true);
 
-                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
+                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringLengths.Any(x => x.Item2.Name == prop.Name))
                             {
                                 if (tableType.Props(false).Any(x => x.Name == prop.Name && x.PropertyType == typeof(string)))
                                 {
@@ -584,7 +584,7 @@ namespace EFCore.Extensions
                         if (attr6 != null)
                         {
                             modelBuilder.Entity(tableType.FullName).Property(prop.Name).IsRequired().IsConcurrencyToken(true).IsRowVersion();
-                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name))
+                            if (!stringUnboundedLengths.Any(x => x.Item2.Name == prop.Name) && !stringLengths.Any(x => x.Item2.Name == prop.Name))
                             {
                                 modelBuilder.Entity(tableType.FullName).Property(prop.Name).HasMaxLength(50);
                                 auditAddedImplicitLengths++;
