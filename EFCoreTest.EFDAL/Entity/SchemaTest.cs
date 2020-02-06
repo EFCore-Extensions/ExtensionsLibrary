@@ -18,7 +18,7 @@ namespace EFCoreTest.EFDAL.Entity
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual int Id { get; protected set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         [Nullable(false)]
         public virtual string Name { get; set; }
 

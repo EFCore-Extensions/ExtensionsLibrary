@@ -69,6 +69,8 @@ namespace EFCore.Extensions.Scripting
                                 newProperty.ValueGenerated = true;
                             else if (a.Name == "IsUnicode")
                                 newProperty.IsUnicode = (bool)a.Value;
+                            else if (a.Name == "ModelId")
+                                newProperty.ModelId = (string)a.Value;
                             else if (a.Name == "IsBlob")
                                 newProperty.IsBlob = true;
                             else if (a.Name == "IsXml")
@@ -221,6 +223,16 @@ namespace EFCore.Extensions.Scripting
             return $"Entities={this.EntityList.Count}, Properties={this.EntityList.SelectMany(z => z.PropertyList).Count()}";
         }
 
+        public virtual string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this,
+                            Newtonsoft.Json.Formatting.None,
+                            new Newtonsoft.Json.JsonSerializerSettings
+                            {
+                                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                            });
+        }
+
     }
 
     public class EntityModel
@@ -260,6 +272,7 @@ namespace EFCore.Extensions.Scripting
         public string Description { get; set; }
         public string DefaultValue { get; set; }
         public bool IsUnicode { get; set; }
+        public string ModelId { get; set; }
         public bool IsXml { get; set; }
         public bool IsUnique { get; set; }
         public bool IsBlob { get; set; }

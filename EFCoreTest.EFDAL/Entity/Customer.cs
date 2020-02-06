@@ -21,7 +21,6 @@ namespace EFCoreTest.EFDAL.Entity
         [PrimaryKey]
         public virtual Guid CustomerId { get; set; }
 
-        [MaxLengthUnbounded]
         [Nullable(false)]
         [Column("Name")]
         [MaxLength(50)]

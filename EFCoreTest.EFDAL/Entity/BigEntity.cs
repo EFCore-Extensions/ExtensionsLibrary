@@ -16,7 +16,7 @@ namespace EFCoreTest.EFDAL.Entity
         [PrimaryKey]
         public int ID { get; protected set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         [Required]
         [Column("JustAnotherName")]
         public string Name { get; set; }

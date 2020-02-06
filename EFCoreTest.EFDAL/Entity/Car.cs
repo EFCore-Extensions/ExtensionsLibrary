@@ -15,7 +15,7 @@ namespace EFCoreTest.EFDAL.Entity
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual int CarId { get; protected set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         [Required]
         [DefaultValue("New Car")]
         [Unicode]

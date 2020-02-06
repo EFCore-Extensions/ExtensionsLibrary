@@ -46,6 +46,8 @@ namespace ConsoleApp1
                 var gen = new SqlServerGeneration(context);
                 var sql = gen.Generate(); //EXECUTE THIS SQL BLOCK TO CREATE DATABASE
 
+                var j = gen.Model.ToJson();
+
                 //Save to file for review
                 //System.IO.File.WriteAllText(@"c:\temp\test.sql", sql);
 

@@ -22,7 +22,7 @@ namespace EFCoreTest.EFDAL.Entity
         public CustomerTypeConstants CustomerTypeValue { get { return (CustomerTypeConstants)this.ID; } }
 
         [StaticDataNameField]
-        [StringLength(50)]
+        [MaxLength(50)]
         public string Name { get; protected set; }
 
         public override string ToString()

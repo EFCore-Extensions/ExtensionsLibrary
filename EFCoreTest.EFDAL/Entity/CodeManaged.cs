@@ -13,7 +13,7 @@ namespace EFCoreTest.EFDAL.Entity
         [PrimaryKey]
         public int ID { get; set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         [Required]
         [Unicode]
         public string Name { get; set; }

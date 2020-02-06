@@ -10,7 +10,7 @@ namespace EFCoreTest.EFDAL.Entity
         [Required]
         public int ID { get; set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         public string Name { get; set; }
     }
 }

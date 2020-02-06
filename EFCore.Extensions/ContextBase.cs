@@ -346,6 +346,19 @@ namespace EFCore.Extensions
 
                     #endregion
 
+                    #region ModelId
+
+                    var modelIdInfos = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<ModelIdAttribute>() != null)
+                            .Select(x => x.GetAttrWithProp<ModelIdAttribute>())
+                            .ToList();
+
+                    foreach (var item in modelIdInfos)
+                    {
+                        modelBuilder.Entity(tableType.FullName).Property(item.Item2.Name).HasAnnotation("ModelId", item.Item1.ModelId);
+                    }
+
+                    #endregion
+
                     #region Unicode
 
                     var unicodeInfos = tableType.Props(false).Where(x => !x.NotMapped() && x.GetAttr<UnicodeAttribute>() != null)

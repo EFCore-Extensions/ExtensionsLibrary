@@ -16,15 +16,15 @@ namespace EFCoreTest.EFDAL.Entity
         [PrimaryKey(1)]
         public int ID2 { get; protected set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         [Indexed("I1", 2)]
         public string Name1 { get; set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         [Indexed("I1", 1)]
         public string Name2 { get; set; }
 
-        [StringLength(50)]
+        [MaxLength(50)]
         public string Name3 { get; set; }
     }
 }

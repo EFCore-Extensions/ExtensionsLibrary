@@ -15,7 +15,8 @@ namespace EFCoreTest.EFDAL.Entity
         public virtual int CategoryId { get; protected set; }
 
         [Required]
-        [StringLength(50)]
+        [MaxLength(50)]
+        [ModelId("aytwgsgw6")]
         public virtual string Name { get; set; }
 
     }
