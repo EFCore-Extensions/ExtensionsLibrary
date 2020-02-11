@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ClassDiagramGeneration.cs" />
     <Compile Remove="PostgresGeneration.cs" />
   </ItemGroup>
 

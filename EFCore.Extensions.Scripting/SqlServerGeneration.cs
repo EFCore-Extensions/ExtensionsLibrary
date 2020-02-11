@@ -21,7 +21,7 @@ namespace EFCore.Extensions.Scripting
 
         public DataModel Model { get; protected set; }
 
-        public virtual string Generate()
+        public virtual string GenerateCreateScript()
         {
             var sb = new StringBuilder();
             sb.AppendLine("--Idempotent Create Script");
@@ -96,6 +96,17 @@ namespace EFCore.Extensions.Scripting
             return sb.ToString();
 
         }
+
+        public virtual string GenerateDiffScript(DataModel previousModel)
+        {
+            if (previousModel == null)
+                throw new Exception("The previous model model cannot be null.");
+
+            //TODO
+            return null;
+        }
+
+        #region Private Methods
 
         private string GetSqlCreatePK(StringBuilder sb)
         {
@@ -410,6 +421,8 @@ namespace EFCore.Extensions.Scripting
                     throw new Exception($"Unknown data type '{property.DataType}'.");
             }
         }
+
+        #endregion
     }
 
     internal static class Extensions

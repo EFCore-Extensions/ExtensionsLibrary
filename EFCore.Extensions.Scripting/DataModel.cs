@@ -223,16 +223,6 @@ namespace EFCore.Extensions.Scripting
             return $"Entities={this.EntityList.Count}, Properties={this.EntityList.SelectMany(z => z.PropertyList).Count()}";
         }
 
-        public virtual string ToJson()
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this,
-                            Newtonsoft.Json.Formatting.None,
-                            new Newtonsoft.Json.JsonSerializerSettings
-                            {
-                                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
-                            });
-        }
-
     }
 
     public class EntityModel

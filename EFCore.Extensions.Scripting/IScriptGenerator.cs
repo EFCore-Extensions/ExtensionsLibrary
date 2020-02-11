@@ -6,7 +6,8 @@ namespace EFCore.Extensions.Scripting
 {
     public interface IScriptGenerator
     {
-        string Generate();
+        string GenerateCreateScript();
         DataModel Model { get; }
+        string GenerateDiffScript(DataModel previousModel);
     }
 }

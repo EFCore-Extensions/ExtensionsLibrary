@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using EFCore.Extensions;
 using EFCore.Extensions.Scripting;
 using EFCoreTest.EFDAL.Entity;
+using System.IO;
 
 namespace ConsoleApp1
 {
@@ -42,9 +43,39 @@ namespace ConsoleApp1
                 //Force model load
                 context.ChangeTracker.AcceptAllChanges();
 
-                //Create SQL generation object
+                var rootPath = @"C:\code\ExtensionsLibrary\EFCoreTest.SqlInstaller\";
+                var modelPath = Path.Combine(rootPath, "Models");
+                var scriptPath = Path.Combine(rootPath, "Migrations");
+                var createPath = Path.Combine(rootPath, "Create");
+                if (!Directory.Exists(modelPath)) Directory.CreateDirectory(modelPath);
+                if (!Directory.Exists(scriptPath)) Directory.CreateDirectory(scriptPath);
+                if (!Directory.Exists(createPath)) Directory.CreateDirectory(createPath);
+
                 var gen = new SqlServerGeneration(context);
-                var sql = gen.Generate(); //EXECUTE THIS SQL BLOCK TO CREATE DATABASE
+
+                //Create SQL generation object
+                var sqlCreate = gen.GenerateCreateScript(); //EXECUTE THIS SQL BLOCK TO CREATE DATABASE
+                File.WriteAllText(Path.Combine(modelPath, "Create.sql"), sqlCreate);
+
+                //Load version file
+                var versionFile = Path.Combine(modelPath, "version.json");
+                var vv = new Versioning();
+                if (File.Exists(versionFile))
+                {
+                    vv = ScriptingExtensions.FromJson<Versioning>(File.ReadAllText(versionFile));
+                }
+                vv.Increment();
+                File.WriteAllText(versionFile, vv.ToJson());
+
+                //Write model to installer project
+                //TODO
+
+                //Load last model (if one)
+                //TODO
+
+                //Diff Script
+                //var sqlDiff = gen.GenerateDiffScript();
+                //File.WriteAllText(Path.Combine(modelPath, "xxx.sql"), sqlCreate);
 
                 var j = gen.Model.ToJson();
 
@@ -52,8 +83,8 @@ namespace ConsoleApp1
                 //System.IO.File.WriteAllText(@"c:\temp\test.sql", sql);
 
                 //This will create a class diagram "dgml" file.
-                var classGen = new ClassDiagramGeneration(context);
-                var xml = classGen.Generate();
+                //var classGen = new ClassDiagramGeneration(context);
+                //var xml = classGen.Generate();
                 //System.IO.File.WriteAllText(@"c:\temp\test8.dgml", xml);
             }
 
