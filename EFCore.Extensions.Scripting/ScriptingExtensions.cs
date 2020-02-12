@@ -1,4 +1,6 @@
-﻿using System;
+﻿using JsonNet.PrivateSettersContractResolvers;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,17 +12,23 @@ namespace EFCore.Extensions.Scripting
             where T : new()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj,
-                            Newtonsoft.Json.Formatting.None,
+                            Newtonsoft.Json.Formatting.Indented,
                             new Newtonsoft.Json.JsonSerializerSettings
                             {
-                                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
+                                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                                DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
                             });
         }
 
         public static T FromJson<T>(string json)
             where T : new()
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new PrivateSetterContractResolver()
+            };
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json, settings);
         }
 
     }

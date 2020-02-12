@@ -55,29 +55,40 @@ namespace ConsoleApp1
 
                 //Create SQL generation object
                 var sqlCreate = gen.GenerateCreateScript(); //EXECUTE THIS SQL BLOCK TO CREATE DATABASE
-                File.WriteAllText(Path.Combine(modelPath, "Create.sql"), sqlCreate);
+                File.WriteAllText(Path.Combine(createPath, "Create.sql"), sqlCreate);
 
                 //Load version file
                 var versionFile = Path.Combine(modelPath, "version.json");
-                var vv = new Versioning();
+                var oldVersion = new Versioning();
                 if (File.Exists(versionFile))
                 {
-                    vv = ScriptingExtensions.FromJson<Versioning>(File.ReadAllText(versionFile));
+                    oldVersion = ScriptingExtensions.FromJson<Versioning>(File.ReadAllText(versionFile));
                 }
-                vv.Increment();
-                File.WriteAllText(versionFile, vv.ToJson());
-
-                //Write model to installer project
-                //TODO
+                var newVersion = new Versioning(oldVersion.ToString());
+                newVersion.Increment();
+                File.WriteAllText(versionFile, newVersion.ToJson());
 
                 //Load last model (if one)
-                //TODO
+                DataModel oldModel = null;
+                var oldVersionFile = Path.Combine(modelPath, oldVersion.GetDiffFileName()) + ".model";
+                if (File.Exists(oldVersionFile))
+                {
+                    oldModel = ScriptingExtensions.FromJson<DataModel>(File.ReadAllText(oldVersionFile)); 
+                }
 
                 //Diff Script
-                //var sqlDiff = gen.GenerateDiffScript();
-                //File.WriteAllText(Path.Combine(modelPath, "xxx.sql"), sqlCreate);
+                if (oldModel != null)
+                {
+                    var sqlDiff = gen.GenerateDiffScript(oldModel);
+                    File.WriteAllText(Path.Combine(scriptPath, newVersion.GetDiffFileName() + ".sql"), sqlDiff);
+                }
 
-                var j = gen.Model.ToJson();
+                //Write model to installer project
+                var modelJson = gen.Model.ToJson();
+                File.WriteAllText(Path.Combine(modelPath, newVersion.GetDiffFileName()) + ".model", modelJson);
+
+                //Save this model
+                //TODO
 
                 //Save to file for review
                 //System.IO.File.WriteAllText(@"c:\temp\test.sql", sql);
