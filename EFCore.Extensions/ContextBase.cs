@@ -16,11 +16,13 @@ namespace EFCore.Extensions
         Microsoft.EntityFrameworkCore.Metadata.IMutableModel MasterModel { get; }
     }
 
-    public partial class ContextBase : DbContext, IDbContext
+    public abstract partial class ContextBase : DbContext, IDbContext
     {
         protected string _connectionString = null;
         protected Random _rnd = new Random();
         protected static List<string> _dbGeneratedProperties = new List<string>();
+
+        public abstract Guid ModelKey { get; }
 
         /// <summary>
         /// Used for model cache management under certain conditions

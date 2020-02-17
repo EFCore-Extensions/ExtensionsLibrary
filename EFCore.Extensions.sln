@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp", "TestApp\TestApp.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCoreTest.SqlInstaller", "EFCoreTest.SqlInstaller\EFCoreTest.SqlInstaller.csproj", "{5D2F43B8-CD85-479B-B933-252E92269B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreTest.PostgresInstaller", "EFCoreTest.PostgresInstaller\EFCoreTest.PostgresInstaller.csproj", "{7DEE891F-518B-4507-8D21-70473D0E8A52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCoreTest.PostgresInstaller", "EFCoreTest.PostgresInstaller\EFCoreTest.PostgresInstaller.csproj", "{7DEE891F-518B-4507-8D21-70473D0E8A52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore.DbManagement", "EFCore.DbManagement\EFCore.DbManagement.csproj", "{891132D4-F798-4A09-803F-1D14F6750E29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{7DEE891F-518B-4507-8D21-70473D0E8A52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DEE891F-518B-4507-8D21-70473D0E8A52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DEE891F-518B-4507-8D21-70473D0E8A52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{891132D4-F798-4A09-803F-1D14F6750E29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891132D4-F798-4A09-803F-1D14F6750E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891132D4-F798-4A09-803F-1D14F6750E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891132D4-F798-4A09-803F-1D14F6750E29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

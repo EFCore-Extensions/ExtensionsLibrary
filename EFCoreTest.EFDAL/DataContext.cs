@@ -1,9 +1,6 @@
 ﻿using EFCore.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 using EFCoreTest.EFDAL.Entity;
 
 namespace EFCoreTest.EFDAL
@@ -38,6 +35,8 @@ namespace EFCoreTest.EFDAL
             : base(startup, connectionString)
         {
         }
+
+        public override Guid ModelKey => new Guid("6A423908-E7C7-4896-9B66-E1DE56F84042");
 
         public virtual DbSet<Customer> Customer { get; protected set; }
         public virtual DbSet<Order> Order { get; protected set; }
