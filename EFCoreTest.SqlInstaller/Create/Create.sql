@@ -71,7 +71,7 @@ GO
 if not exists(select * from sys.tables t inner join sys.schemas s on t.schema_id = s.schema_id where t.name = 'CodeManagedKey' and s.name = 'dbo')
 CREATE TABLE [dbo].[CodeManagedKey] (
 [ID] [int]  NOT NULL ,
-[Concurrency] [ROWVERSION]  NOT NULL ,
+[Concurrency] [UniqueIdentifier]  NOT NULL ,
 [Data] [varchar] (MAX)  NULL ,
 [Name] [nvarchar] (50)  NOT NULL ,
 [Version] [int]  NOT NULL ,
@@ -108,7 +108,7 @@ CREATE TABLE [dbo].[Customer] (
 [ModifiedDate] [DateTime2] (7)  NOT NULL CONSTRAINT [DF_CUSTOMER_MODIFIEDDATE] DEFAULT (getdate()),
 [Name] [varchar] (50)  NOT NULL ,
 [TenantId] [varchar] (50)  NOT NULL ,
-[Timestamp] [ROWVERSION]  NOT NULL ,
+[Timestamp] [varbinary] (MAX)  NOT NULL ,
 CONSTRAINT [PK_CUSTOMER] PRIMARY KEY CLUSTERED
     (
         [CustomerId] ASC
@@ -148,7 +148,7 @@ CREATE TABLE [dbo].[Order] (
 [ModifiedDate] [DateTime2] (7)  NOT NULL CONSTRAINT [DF_ORDER_MODIFIEDDATE] DEFAULT (getdate()),
 [Quantity] [int]  NOT NULL CONSTRAINT [DF_ORDER_QUANTITY] DEFAULT (5),
 [TenantId] [varchar] (50)  NOT NULL ,
-[Timestamp] [ROWVERSION]  NOT NULL ,
+[Timestamp] [varbinary] (MAX)  NOT NULL ,
 CONSTRAINT [PK_ORDER] PRIMARY KEY CLUSTERED
     (
         [OrderId5] ASC
@@ -296,10 +296,6 @@ GO
 --##SECTION BEGIN [CREATE INDEXES]
 
 --##SECTION END [CREATE INDEXES]
-
---##SECTION BEGIN [REMOVE DEFAULTS]
-
---##SECTION END [REMOVE DEFAULTS]
 
 --##SECTION BEGIN [ADD INDEXES]
 

@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCoreTest.SqlInstaller", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCoreTest.PostgresInstaller", "EFCoreTest.PostgresInstaller\EFCoreTest.PostgresInstaller.csproj", "{7DEE891F-518B-4507-8D21-70473D0E8A52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore.DbManagement", "EFCore.DbManagement\EFCore.DbManagement.csproj", "{891132D4-F798-4A09-803F-1D14F6750E29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.DbManagement", "EFCore.DbManagement\EFCore.DbManagement.csproj", "{891132D4-F798-4A09-803F-1D14F6750E29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{89552D45-EEB2-4F79-B66B-E89EDAD1E459}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +62,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E80CE6B0-6CF2-4BD4-8B52-905F0DA1A5CB} = {89552D45-EEB2-4F79-B66B-E89EDAD1E459}
+		{7CDECA85-BA45-4677-9242-AEED40EDE7A2} = {89552D45-EEB2-4F79-B66B-E89EDAD1E459}
+		{5D2F43B8-CD85-479B-B933-252E92269B0A} = {89552D45-EEB2-4F79-B66B-E89EDAD1E459}
+		{7DEE891F-518B-4507-8D21-70473D0E8A52} = {89552D45-EEB2-4F79-B66B-E89EDAD1E459}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E69877D-54D7-4C04-A898-CB268173D0FA}

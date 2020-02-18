@@ -2,7 +2,7 @@
 using EFCore.DbManagement;
 using Microsoft.EntityFrameworkCore;
 
-namespace EFCoreTest.SqlInstaller
+namespace EFCoreTest.PostgresInstaller
 {
     public class InstallerEngine : ManagementEngine
     {
@@ -14,7 +14,7 @@ namespace EFCoreTest.SqlInstaller
         public override void Install(Guid modelKey, string connectionString)
         {
             this.Options = new DbContextOptionsBuilder<DbManagementContext>()
-                .UseSqlServer(connectionString)
+                .UseNpgsql(connectionString)
                 .Options;
 
             base.Install(modelKey, connectionString);

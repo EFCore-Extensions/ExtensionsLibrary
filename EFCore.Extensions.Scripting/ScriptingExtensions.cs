@@ -1,8 +1,5 @@
 ﻿using JsonNet.PrivateSettersContractResolvers;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EFCore.Extensions.Scripting
 {
@@ -27,7 +24,6 @@ namespace EFCore.Extensions.Scripting
             {
                 ContractResolver = new PrivateSetterContractResolver()
             };
-
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json, settings);
         }
 

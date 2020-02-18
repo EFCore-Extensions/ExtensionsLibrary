@@ -1,0 +1,466 @@
+{
+  "EntityList": [
+    {
+      "Name": "BasicTenant",
+      "DatabaseName": "BasicTenant",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "Id",
+          "DataType": "System.Int32",
+          "PkIndex": 0,
+          "ValueGenerated": true
+        },
+        {
+          "CodeName": "Name",
+          "DataType": "System.String"
+        },
+        {
+          "CodeName": "TenantId",
+          "DataType": "System.String",
+          "Length": 50
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    },
+    {
+      "Name": "BigEntity",
+      "DatabaseName": "BigDbEntity",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "ID",
+          "DataType": "System.Int32",
+          "PkIndex": 0,
+          "ValueGenerated": true
+        },
+        {
+          "CodeName": "MyBlob1",
+          "DataType": "System.String",
+          "IsBlob": true
+        },
+        {
+          "Nullable": true,
+          "CodeName": "MyBlob2",
+          "DataType": "System.String",
+          "IsUnicode": true,
+          "IsBlob": true
+        },
+        {
+          "CodeName": "MyBool",
+          "DataType": "System.Boolean"
+        },
+        {
+          "Nullable": true,
+          "CodeName": "MyByteArray",
+          "DataType": "System.Byte[]"
+        },
+        {
+          "CodeName": "MyChar",
+          "DataType": "System.Char"
+        },
+        {
+          "CodeName": "MyDateTime",
+          "DataType": "System.DateTime"
+        },
+        {
+          "CodeName": "MyDecmial",
+          "DataType": "System.Decimal"
+        },
+        {
+          "CodeName": "MyDouble",
+          "DataType": "System.Double"
+        },
+        {
+          "CodeName": "MyFloat",
+          "DataType": "System.Single"
+        },
+        {
+          "CodeName": "MyInt16",
+          "DataType": "System.Int16"
+        },
+        {
+          "CodeName": "MyShort",
+          "DataType": "System.Int16"
+        },
+        {
+          "CodeName": "MySingle",
+          "DataType": "System.Single"
+        },
+        {
+          "Nullable": true,
+          "CodeName": "MyXml",
+          "DataType": "System.String",
+          "IsXml": true
+        },
+        {
+          "CodeName": "Name",
+          "DatabaseName": "JustAnotherName",
+          "DataType": "System.String",
+          "Length": 50
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    },
+    {
+      "Name": "Car",
+      "DatabaseName": "Car",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "CarId",
+          "DataType": "System.Int32",
+          "PkIndex": 0,
+          "ValueGenerated": true
+        },
+        {
+          "CodeName": "IsDeleted",
+          "DataType": "System.Boolean",
+          "DefaultValue": "False"
+        },
+        {
+          "CodeName": "Name",
+          "DataType": "System.String",
+          "Length": 50,
+          "DefaultValue": "New Car",
+          "IsUnicode": true
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    },
+    {
+      "Name": "Category",
+      "DatabaseName": "TenantMaster",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "CategoryId",
+          "DataType": "System.Int32",
+          "PkIndex": 0,
+          "ValueGenerated": true
+        },
+        {
+          "CodeName": "Name",
+          "DataType": "System.String",
+          "Length": 50,
+          "ModelId": "aytwgsgw6"
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    },
+    {
+      "Name": "CodeManagedKey",
+      "DatabaseName": "CodeManagedKey",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "ID",
+          "DataType": "System.Int32",
+          "PkIndex": 0
+        },
+        {
+          "CodeName": "Concurrency",
+          "DataType": "System.Guid",
+          "PropertyType": 5
+        },
+        {
+          "Nullable": true,
+          "CodeName": "Data",
+          "DataType": "System.String"
+        },
+        {
+          "CodeName": "Name",
+          "DataType": "System.String",
+          "Length": 50,
+          "IsUnicode": true
+        },
+        {
+          "CodeName": "Version",
+          "DataType": "System.Int32"
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    },
+    {
+      "Name": "CompositeStuff",
+      "DatabaseName": "CompositeStuff",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "ID2",
+          "DataType": "System.Int32",
+          "PkIndex": 0
+        },
+        {
+          "CodeName": "ID1",
+          "DataType": "System.Int32",
+          "PkIndex": 1
+        },
+        {
+          "Nullable": true,
+          "CodeName": "Name1",
+          "DataType": "System.String",
+          "Length": 50
+        },
+        {
+          "Nullable": true,
+          "CodeName": "Name2",
+          "DataType": "System.String",
+          "Length": 50
+        },
+        {
+          "Nullable": true,
+          "CodeName": "Name3",
+          "DataType": "System.String",
+          "Length": 50
+        }
+      ],
+      "IndexList": [
+        {
+          "Name": "IX_CompositeStuff_Name2_Name1",
+          "PropertyList": [
+            "Name2",
+            "Name1"
+          ]
+        }
+      ],
+      "NavigationList": []
+    },
+    {
+      "Name": "Customer",
+      "DatabaseName": "Customer",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "CustomerId",
+          "DataType": "System.Guid",
+          "PkIndex": 0,
+          "Description": "Some Description"
+        },
+        {
+          "Nullable": true,
+          "CodeName": "CreatedBy",
+          "DataType": "System.String",
+          "Length": 50,
+          "PropertyType": 1
+        },
+        {
+          "CodeName": "CreatedDate",
+          "DataType": "System.DateTime",
+          "PropertyType": 2
+        },
+        {
+          "CodeName": "CustomerTypeId",
+          "DataType": "System.Int32"
+        },
+        {
+          "Nullable": true,
+          "CodeName": "ModifiedBy",
+          "DataType": "System.String",
+          "Length": 50,
+          "PropertyType": 3
+        },
+        {
+          "CodeName": "ModifiedDate",
+          "DataType": "System.DateTime",
+          "PropertyType": 4
+        },
+        {
+          "CodeName": "Name1",
+          "DatabaseName": "Name",
+          "DataType": "System.String",
+          "Length": 50
+        },
+        {
+          "CodeName": "TenantId",
+          "DataType": "System.String",
+          "Length": 50
+        },
+        {
+          "CodeName": "Timestamp",
+          "DataType": "System.Byte[]",
+          "PropertyType": 5
+        }
+      ],
+      "IndexList": [
+        {
+          "Name": "IX_Customer_CustomerTypeId",
+          "PropertyList": [
+            "CustomerTypeId"
+          ]
+        }
+      ],
+      "NavigationList": [
+        {
+          "Name": "FK_CUSTOMER_CUSTOMERTYPE_CUSTOMERTYPEID",
+          "IsRequired": true,
+          "PrincipalEntityName": "CustomerType",
+          "ForeignEntityName": "Customer",
+          "DeleteBehavior": 1,
+          "PropertyList": {
+            "ID": "CustomerTypeId"
+          }
+        },
+        {
+          "Name": "FK_ORDER_CUSTOMER_CUSTOMERFKID",
+          "IsRequired": true,
+          "PrincipalEntityName": "Customer",
+          "ForeignEntityName": "Order",
+          "DeleteBehavior": 1,
+          "PropertyList": {
+            "CustomerId": "CustomerFkId"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CustomerType",
+      "DatabaseName": "CustomerType",
+      "PrimaryKeyClustered": true,
+      "IsStaticDataMapping": true,
+      "PropertyList": [
+        {
+          "CodeName": "ID",
+          "DataType": "System.Int32",
+          "PkIndex": 0,
+          "ValueGenerated": true,
+          "PropertyType": 6
+        },
+        {
+          "CodeName": "Name",
+          "DataType": "System.String",
+          "Length": 50,
+          "PropertyType": 7
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    },
+    {
+      "Name": "HeapTable",
+      "DatabaseName": "HeapTable",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "ID",
+          "DataType": "System.Int32"
+        },
+        {
+          "Nullable": true,
+          "CodeName": "Name",
+          "DataType": "System.String",
+          "Length": 50
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    },
+    {
+      "Name": "Order",
+      "DatabaseName": "Order",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "OrderId5",
+          "DataType": "System.Guid",
+          "PkIndex": 0
+        },
+        {
+          "Nullable": true,
+          "CodeName": "CreatedBy",
+          "DataType": "System.String",
+          "Length": 50,
+          "PropertyType": 1
+        },
+        {
+          "CodeName": "CreatedDate",
+          "DataType": "System.DateTime",
+          "PropertyType": 2
+        },
+        {
+          "CodeName": "CustomerFkId",
+          "DataType": "System.Guid"
+        },
+        {
+          "CodeName": "DefaultedTime",
+          "DataType": "System.DateTime",
+          "DefaultValue": "**CurrentTime"
+        },
+        {
+          "Nullable": true,
+          "CodeName": "ModifiedBy",
+          "DataType": "System.String",
+          "Length": 50,
+          "PropertyType": 3
+        },
+        {
+          "CodeName": "ModifiedDate",
+          "DataType": "System.DateTime",
+          "PropertyType": 4
+        },
+        {
+          "CodeName": "Quantity",
+          "DataType": "System.Int32",
+          "DefaultValue": "5"
+        },
+        {
+          "CodeName": "TenantId",
+          "DataType": "System.String",
+          "Length": 50
+        },
+        {
+          "CodeName": "Timestamp",
+          "DataType": "System.Byte[]",
+          "PropertyType": 5
+        }
+      ],
+      "IndexList": [
+        {
+          "Name": "IX_Order_CustomerFkId",
+          "PropertyList": [
+            "CustomerFkId"
+          ]
+        }
+      ],
+      "NavigationList": [
+        {
+          "Name": "FK_ORDER_CUSTOMER_CUSTOMERFKID",
+          "IsRequired": true,
+          "PrincipalEntityName": "Customer",
+          "ForeignEntityName": "Order",
+          "DeleteBehavior": 1,
+          "PropertyList": {
+            "CustomerId": "CustomerFkId"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SchemaTest",
+      "DatabaseName": "SchemaTest",
+      "Schema": "MySchema",
+      "PrimaryKeyClustered": true,
+      "PropertyList": [
+        {
+          "CodeName": "Id",
+          "DataType": "System.Int32",
+          "PkIndex": 0,
+          "ValueGenerated": true
+        },
+        {
+          "CodeName": "Name",
+          "DataType": "System.String",
+          "Length": 50
+        }
+      ],
+      "IndexList": [],
+      "NavigationList": []
+    }
+  ],
+  "CreatedDate": "2020-02-17T22:50:40.0910365-05:00"
+}

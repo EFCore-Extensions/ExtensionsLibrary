@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
-namespace EFCore.Extensions.Scripting
+namespace EFCore.Extensions.Scripting.SqlServer
 {
     public class SqlServerGeneration : ScriptGenerationBase
     {
@@ -21,11 +21,11 @@ namespace EFCore.Extensions.Scripting
 
             //Create Schemas
             var allSchemas = this.Model.EntityList.Select(x => x.Schema).Distinct().ToList();
-            foreach (var sch in allSchemas.Where(x => !string.IsNullOrEmpty(x)))
+            foreach (var schema in allSchemas.Where(x => !string.IsNullOrEmpty(x)))
             {
-                sb.AppendLine($"--CREATE SCHEMA [{sch}]");
-                sb.AppendLine($"if not exists(select * from sys.schemas where [name] = '{sch}')");
-                sb.AppendLine($"exec('create schema [{sch}];')");
+                sb.AppendLine($"--CREATE SCHEMA [{schema}]");
+                sb.AppendLine($"if not exists(select * from sys.schemas where [name] = '{schema}')");
+                sb.AppendLine($"exec('create schema [{schema}];')");
             }
             sb.AppendLine();
 
@@ -80,7 +80,6 @@ namespace EFCore.Extensions.Scripting
             }
 
             GetSqlCreatePK(sb);
-            AppendRemoveDefaults(sb);
             AppendIndexes(sb);
             AppendRelations(sb);
             AppendStaticData(sb);
@@ -90,10 +89,10 @@ namespace EFCore.Extensions.Scripting
         public override string GenerateDiffScript(DataModel previousModel)
         {
             if (previousModel == null)
-                throw new Exception("The previous model model cannot be null.");
+                throw new Exception("The previous model cannot be null.");
 
             //TODO
-            return null;
+            return "--NOT IMPLEMENTED";
         }
 
         #region Private Methods
@@ -212,35 +211,6 @@ namespace EFCore.Extensions.Scripting
             }
         }
 
-        private void AppendRemoveDefaults(StringBuilder sb)
-        {
-            sb.AppendLine("--##SECTION BEGIN [REMOVE DEFAULTS]");
-            sb.AppendLine();
-            foreach (var entity in this.Model.EntityList.OrderBy(x => x.Name))
-            {
-                //Add Defaults
-                var tempsb = new StringBuilder();
-                foreach (var column in entity.PropertyList)
-                {
-                    var defaultText = GetSqlDropColumnDefault(entity, column);
-                    if (!string.IsNullOrEmpty(defaultText)) tempsb.Append(defaultText);
-                }
-
-                if (tempsb.ToString() != string.Empty)
-                {
-                    sb.AppendLine($"--BEGIN DEFAULTS FOR TABLE [{entity.GetDatabaseName()}]");
-                    sb.AppendLine("DECLARE @defaultName varchar(max)");
-                    sb.Append(tempsb.ToString());
-                    sb.AppendLine($"--END DEFAULTS FOR TABLE [{entity.GetDatabaseName()}]");
-                    sb.AppendLine("GO");
-                    sb.AppendLine();
-                }
-
-            }
-            sb.AppendLine("--##SECTION END [REMOVE DEFAULTS]");
-            sb.AppendLine();
-        }
-
         private HashSet<string> _usedRelations = new HashSet<string>();
         private void AppendRelations(StringBuilder sb)
         {
@@ -340,21 +310,6 @@ namespace EFCore.Extensions.Scripting
 
             sb.AppendLine("--##SECTION END [STATIC DATA]");
             sb.AppendLine();
-        }
-
-        private string GetSqlDropColumnDefault(EntityModel entity, PropertyModel column, bool upgradeScript = false)
-        {
-            return "";
-            var sb = new StringBuilder();
-            sb.AppendLine($"--DROP CONSTRAINT FOR '[{entity.GetDatabaseName()}].[{column.GetDatabaseName()}]'");
-            if (upgradeScript)
-                sb.AppendLine("DECLARE @defaultName varchar(max)");
-            sb.AppendLine("SET @defaultName = (SELECT d.name FROM sys.columns c inner join sys.default_constraints d on c.column_id = d.parent_column_id and c.object_id = d.parent_object_id inner join sys.objects o on d.parent_object_id = o.object_id where o.name = '" + entity.GetDatabaseName() + "' and c.name = '" + column.GetDatabaseName() + "')");
-            sb.AppendLine("if @defaultName IS NOT NULL");
-            sb.AppendLine($"exec('ALTER TABLE [{entity.GetSchema()}].[{entity.GetDatabaseName()}] DROP CONSTRAINT ' + @defaultName)");
-            if (upgradeScript)
-                sb.AppendLine("GO");
-            return sb.ToString();
         }
 
         private string GetDatabaseType(PropertyModel property)

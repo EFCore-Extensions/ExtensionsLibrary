@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EFCore.Extensions.Scripting
 {
     public class Versioning
     {
-        public Versioning()
-        {
-            this.Version = "0.0.0.0";
-        }
+        public Versioning() { }
 
         public Versioning(string version)
             : this()
@@ -18,8 +13,8 @@ namespace EFCore.Extensions.Scripting
             this.Version = version;
         }
 
-        public string Version { get; protected set; }
-
+        public DateTime LastGeneration => DateTime.Now;
+        public string Version { get; protected set; } = "0.0.0.0";
         public void Increment()
         {
             if (string.IsNullOrEmpty(this.Version))
@@ -53,9 +48,6 @@ namespace EFCore.Extensions.Scripting
                 arr[3].ToString("#####00000");
         }
 
-        public override string ToString()
-        {
-            return this.Version;
-        }
+        public override string ToString() => this.Version;
     }
 }

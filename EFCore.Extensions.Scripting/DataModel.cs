@@ -21,9 +21,7 @@ namespace EFCore.Extensions.Scripting
 
     public class DataModel
     {
-        public DataModel()
-        {
-        }
+        public DataModel() { }
 
         public DataModel(Microsoft.EntityFrameworkCore.Metadata.IMutableModel model)
             : this()
@@ -216,6 +214,7 @@ namespace EFCore.Extensions.Scripting
         }
 
         public List<EntityModel> EntityList { get; set; } = new List<EntityModel>();
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public override string ToString()
         {
@@ -237,16 +236,11 @@ namespace EFCore.Extensions.Scripting
 
         public string GetDatabaseName()
         {
-            if (string.IsNullOrEmpty(this.DatabaseName))
-                return this.Name;
+            if (string.IsNullOrEmpty(this.DatabaseName)) return this.Name;
             return this.DatabaseName;
         }
 
-        public override string ToString()
-        {
-            return $"{this.Name}";
-        }
-
+        public override string ToString() => $"{this.Name}";
     }
 
     public class PropertyModel
@@ -269,16 +263,11 @@ namespace EFCore.Extensions.Scripting
 
         public string GetDatabaseName()
         {
-            if (string.IsNullOrEmpty(this.DatabaseName))
-                return this.CodeName;
+            if (string.IsNullOrEmpty(this.DatabaseName)) return this.CodeName;
             return this.DatabaseName;
         }
 
-        public override string ToString()
-        {
-            return $"{this.CodeName}, {this.CodeName}";
-        }
-
+        public override string ToString() => $"{this.CodeName}, {this.CodeName}";
     }
 
     public class IndexModel
@@ -286,11 +275,7 @@ namespace EFCore.Extensions.Scripting
         public string Name { get; set; }
         public List<string> PropertyList { get; set; } = new List<string>();
 
-        public override string ToString()
-        {
-            return $"{this.Name}";
-        }
-
+        public override string ToString() => $"{this.Name}";
     }
 
     public class NavigationModel
@@ -306,9 +291,6 @@ namespace EFCore.Extensions.Scripting
         /// </summary>
         public Dictionary<string, string> PropertyList { get; set; } = new Dictionary<string, string>();
 
-        public override string ToString()
-        {
-            return $"{this.Name}";
-        }
+        public override string ToString() => $"{this.Name}";
     }
 }

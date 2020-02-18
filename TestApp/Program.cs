@@ -21,6 +21,7 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             GenerateSqlScript();
+            GeneratePostgresScript();
             TestCodeManaged();
             TestSoftDelete();
             TestBasicTenant();
@@ -51,7 +52,7 @@ namespace ConsoleApp1
                 if (!Directory.Exists(scriptPath)) Directory.CreateDirectory(scriptPath);
                 if (!Directory.Exists(createPath)) Directory.CreateDirectory(createPath);
 
-                var gen = new SqlServerGeneration(context);
+                var gen = new EFCore.Extensions.Scripting.SqlServer.SqlServerGeneration(context);
 
                 //Create SQL generation object
                 var sqlCreate = gen.GenerateCreateScript(); //EXECUTE THIS SQL BLOCK TO CREATE DATABASE
@@ -74,6 +75,64 @@ namespace ConsoleApp1
                 if (File.Exists(oldVersionFile))
                 {
                     oldModel = ScriptingExtensions.FromJson<DataModel>(File.ReadAllText(oldVersionFile)); 
+                }
+
+                //Diff Script
+                if (oldModel != null)
+                {
+                    var sqlDiff = gen.GenerateDiffScript(oldModel);
+                    File.WriteAllText(Path.Combine(scriptPath, newVersion.GetDiffFileName() + ".sql"), sqlDiff);
+                }
+
+                //Write model to installer project
+                var modelJson = gen.Model.ToJson();
+                File.WriteAllText(Path.Combine(modelPath, newVersion.GetDiffFileName()) + ".model", modelJson);
+            }
+
+        }
+
+        private static void GeneratePostgresScript()
+        {
+            //Create an audit tracking configuration
+            var startup = new TenantContextStartup("jsmith", tenantId1);
+
+            //Create SQL Script
+            using (var context = new DataContext(startup, "NO_CONNECTIONSTRING"))
+            {
+                //Force model load
+                context.ChangeTracker.AcceptAllChanges();
+
+                var rootPath = @"C:\code\ExtensionsLibrary\EFCoreTest.PostgresInstaller\";
+                var modelPath = Path.Combine(rootPath, "Models");
+                var scriptPath = Path.Combine(rootPath, "Migrations");
+                var createPath = Path.Combine(rootPath, "Create");
+                if (!Directory.Exists(modelPath)) Directory.CreateDirectory(modelPath);
+                if (!Directory.Exists(scriptPath)) Directory.CreateDirectory(scriptPath);
+                if (!Directory.Exists(createPath)) Directory.CreateDirectory(createPath);
+
+                var gen = new EFCore.Extensions.Scripting.Postgres.PostgresGeneration(context);
+
+                //Create SQL generation object
+                var sqlCreate = gen.GenerateCreateScript(); //EXECUTE THIS SQL BLOCK TO CREATE DATABASE
+                File.WriteAllText(Path.Combine(createPath, "Create.sql"), sqlCreate);
+
+                //Load version file
+                var versionFile = Path.Combine(modelPath, "version.json");
+                var oldVersion = new Versioning();
+                if (File.Exists(versionFile))
+                {
+                    oldVersion = ScriptingExtensions.FromJson<Versioning>(File.ReadAllText(versionFile));
+                }
+                var newVersion = new Versioning(oldVersion.ToString());
+                newVersion.Increment();
+                File.WriteAllText(versionFile, newVersion.ToJson());
+
+                //Load last model (if one)
+                DataModel oldModel = null;
+                var oldVersionFile = Path.Combine(modelPath, oldVersion.GetDiffFileName()) + ".model";
+                if (File.Exists(oldVersionFile))
+                {
+                    oldModel = ScriptingExtensions.FromJson<DataModel>(File.ReadAllText(oldVersionFile));
                 }
 
                 //Diff Script
