@@ -11,15 +11,9 @@ namespace UnitTestProject
     [TestClass]
     public class DatabaseTests
     {
-        private DbContextOptions inMemOptions = null;
         private string connectionString = "qqq";
         private string TenantA = "AAA";
         private string TenantB = "BBB";
-
-        public DatabaseTests()
-        {
-            inMemOptions = (new DbContextOptionsBuilder()).UseInMemoryDatabase("db1").Options;
-        }
 
         [TestMethod]
         public void TestSoftDelete()
@@ -95,6 +89,14 @@ namespace UnitTestProject
             {
                 var list = context.BasicTenant.ToList();
                 Assert.AreEqual(TenantBCount, list.Count);
+            }
+
+            //Now select all objects for missing tenant
+            startup = new TenantContextStartup("jsmith", "some string");
+            using (var context = new TestContext(startup, connectionString))
+            {
+                var list = context.BasicTenant.ToList();
+                Assert.AreEqual(0, list.Count);
             }
 
         }

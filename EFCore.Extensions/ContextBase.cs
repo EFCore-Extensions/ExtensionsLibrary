@@ -21,13 +21,9 @@ namespace EFCore.Extensions
         protected string _connectionString = null;
         protected Random _rnd = new Random();
         protected static List<string> _dbGeneratedProperties = new List<string>();
-
+        private string _tenantId = null;
+        
         public abstract Guid ModelKey { get; }
-
-        /// <summary>
-        /// Used for model cache management under certain conditions
-        /// </summary>
-        protected internal string ModelCacheKey { get; }
 
         public ContextBase()
             : base()
@@ -49,9 +45,7 @@ namespace EFCore.Extensions
             if (startup == null)
                 throw new Exception("Startup cannot be null");
 
-            if (startup is TenantContextStartup)
-                this.ModelCacheKey = (startup as TenantContextStartup).TenantId;
-
+            _tenantId = (startup as TenantContextStartup)?.TenantId;
             _connectionString = ConfigurationManager.ConnectionStrings[this.GetType().Name]?.ConnectionString;
             this.ContextStartup = startup;
             this.OnContextCreated();
@@ -63,9 +57,7 @@ namespace EFCore.Extensions
             if (startup == null)
                 throw new Exception("Startup cannot be null");
 
-            if (startup is TenantContextStartup)
-                this.ModelCacheKey = (startup as TenantContextStartup).TenantId;
-
+            _tenantId = (startup as TenantContextStartup)?.TenantId;
             _connectionString = connectionString;
             this.ContextStartup = startup;
             this.OnContextCreated();
@@ -138,14 +130,6 @@ namespace EFCore.Extensions
             this.OnAfterSaveChanges();
 
             return count;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-
-            //This will create one model cache per key
-            optionsBuilder.ReplaceService<Microsoft.EntityFrameworkCore.Infrastructure.IModelCacheKeyFactory, ModelCacheKeyFactory>();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -258,8 +242,7 @@ namespace EFCore.Extensions
                             }
 
                             //https://haacked.com/archive/2019/07/29/query-filter-by-interface/
-                            ReflectionHelpers.SetEntityQueryFilter<ITenantEntity>(modelBuilder, tableType, p => p.TenantId == startup.TenantId);
-
+                            ReflectionHelpers.SetEntityQueryFilter<ITenantEntity>(modelBuilder, tableType, p => EF.Property<string>(p, "TenantId") == _tenantId);
                         }
                     }
                     #endregion
@@ -792,11 +775,5 @@ namespace EFCore.Extensions
             return false;
         }
 
-    }
-
-    internal class ModelCacheKeyFactory : Microsoft.EntityFrameworkCore.Infrastructure.IModelCacheKeyFactory
-    {
-        public object Create(DbContext context) 
-            => context is ContextBase myContext ? (context.GetType(), myContext.ModelCacheKey) : (object)context.GetType();
     }
 }
