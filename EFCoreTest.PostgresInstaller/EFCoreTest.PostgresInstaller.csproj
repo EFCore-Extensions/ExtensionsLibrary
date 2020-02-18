@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EFCore.DbManagement\EFCore.DbManagement.csproj" />
+    <ProjectReference Include="..\EFCore.DbManagement\EFCore.Extensions.DbManagement.csproj" />
+    <ProjectReference Include="..\EFCore.Extensions.DbManagement\EFCore.Extensions.DbManagement.csproj" />
   </ItemGroup>
 
 </Project>

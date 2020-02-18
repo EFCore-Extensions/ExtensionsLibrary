@@ -80,7 +80,7 @@ namespace ConsoleApp1
                 //Diff Script
                 if (oldModel != null)
                 {
-                    var sqlDiff = gen.GenerateDiffScript(oldModel);
+                    var sqlDiff = gen.GenerateDiffScript(oldModel, newVersion);
                     File.WriteAllText(Path.Combine(scriptPath, newVersion.GetDiffFileName() + ".sql"), sqlDiff);
                 }
 
@@ -138,7 +138,7 @@ namespace ConsoleApp1
                 //Diff Script
                 if (oldModel != null)
                 {
-                    var sqlDiff = gen.GenerateDiffScript(oldModel);
+                    var sqlDiff = gen.GenerateDiffScript(oldModel, newVersion);
                     File.WriteAllText(Path.Combine(scriptPath, newVersion.GetDiffFileName() + ".sql"), sqlDiff);
                 }
 

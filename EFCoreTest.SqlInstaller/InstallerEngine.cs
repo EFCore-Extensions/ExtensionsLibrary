@@ -1,5 +1,5 @@
 ﻿using System;
-using EFCore.DbManagement;
+using EFCore.Extensions.DbManagement;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCoreTest.SqlInstaller
@@ -7,7 +7,7 @@ namespace EFCoreTest.SqlInstaller
     public class InstallerEngine : ManagementEngine
     {
         public InstallerEngine(System.Reflection.Assembly assembly)
-        : base(assembly)
+            : base(assembly)
         {
         }
 

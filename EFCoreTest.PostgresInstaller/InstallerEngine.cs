@@ -1,5 +1,5 @@
 ﻿using System;
-using EFCore.DbManagement;
+using EFCore.Extensions.DbManagement;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCoreTest.PostgresInstaller
@@ -7,7 +7,7 @@ namespace EFCoreTest.PostgresInstaller
     public class InstallerEngine : ManagementEngine
     {
         public InstallerEngine(System.Reflection.Assembly assembly)
-        : base(assembly)
+            : base(assembly)
         {
         }
 
@@ -20,6 +20,6 @@ namespace EFCoreTest.PostgresInstaller
             base.Install(modelKey, connectionString);
         }
 
-        protected override string BreakLine => "GO";
+        protected override string BreakLine => "--GO";
     }
 }

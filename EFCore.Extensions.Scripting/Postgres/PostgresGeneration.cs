@@ -41,13 +41,16 @@ namespace EFCore.Extensions.Scripting.Postgres
             return sb.ToString();
         }
 
-        public override string GenerateDiffScript(DataModel previousModel)
+        public override string GenerateDiffScript(DataModel previousModel, Versioning version)
         {
             if (previousModel == null)
                 throw new Exception("The previous model cannot be null.");
 
-            //TODO
-            return "--NOT IMPLEMENTED";
+            var sb = new StringBuilder();
+            sb.AppendLine("--NOT IMPLEMENTED");
+            sb.AppendLine("--Generated Upgrade For Version " + version.ToString());
+            sb.AppendLine("--Generated on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            return sb.ToString();
         }
 
         private static string GetSQLCreateTable(EntityModel table)

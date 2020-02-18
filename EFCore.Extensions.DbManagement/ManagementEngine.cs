@@ -3,19 +3,26 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 
-namespace EFCore.DbManagement
+namespace EFCore.Extensions.DbManagement
 {
     public abstract class ManagementEngine
     {
+        private const string Folder1 = "._1_Initialize.";
+        private const string Folder2 = "._2_Migrations.";
+        private const string Folder3 = "._3_Create.";
+        private const string Folder4 = "._4_Programmability.";
+        private const string Folder5 = "._5_Finalize.";
+
         protected ManagementEngine(System.Reflection.Assembly assembly)
         {
             this.Assembly = assembly;
         }
 
-        protected System.Reflection.Assembly Assembly { get; set; }
-        protected string ConnectionString { get; private set; } = null;
+        private System.Reflection.Assembly Assembly { get; set; }
+        private string ConnectionString { get; set; } = null;
 
         public virtual void Install(Guid modelKey, string connectionString)
         {
@@ -52,16 +59,42 @@ namespace EFCore.DbManagement
         protected virtual void RunScripts()
         {
             var scripts = GetScripts(this.Assembly);
-            foreach (var resourceFileName in scripts)
+
+            var newList = new List<string>();
+            newList.AddRange(scripts.Where(x => x.Contains(Folder1)).OrderBy(x => x));
+            newList.AddRange(scripts.Where(x => x.Contains(Folder2)).OrderBy(x => x));
+            newList.AddRange(scripts.Where(x => x.Contains(Folder3)).OrderBy(x => x));
+            newList.AddRange(scripts.Where(x => x.Contains(Folder4)).OrderBy(x => x));
+            newList.AddRange(scripts.Where(x => x.Contains(Folder5)).OrderBy(x => x));
+
+            //TODO: Transaction
+            using (var context = new DbManagementContext(this.Options))
             {
-                var sql = string.Empty;
-                var manifestStream = this.Assembly.GetManifestResourceStream(resourceFileName);
-                using (var sr = new System.IO.StreamReader(manifestStream))
+                foreach (var resourceFileName in newList)
                 {
-                    sql = sr.ReadToEnd();
+                    var sql = string.Empty;
+                    var manifestStream = this.Assembly.GetManifestResourceStream(resourceFileName);
+                    using (var sr = new System.IO.StreamReader(manifestStream))
+                    {
+                        sql = sr.ReadToEnd();
+                    }
+
+                    this.ExecuteScript(sql, context);
+
+                    var hash = sql.GetHash();
+                    var logItem = context.VersionObject.FirstOrDefault(x => x.Hash == hash);
+                    if (logItem == null)
+                    {
+                        logItem = new VersionObject {Hash = hash};
+                        context.Add(logItem);
+                    }
+
+                    logItem.Name = resourceFileName;
+                    logItem.CreatedDate = DateTime.Now;
+                    logItem.ModifiedDate = logItem.CreatedDate;
                 }
 
-                this.ExecuteScript(sql);
+                context.SaveChanges();
             }
         }
 
@@ -78,7 +111,7 @@ namespace EFCore.DbManagement
             return retval;
         }
 
-        private void ExecuteScript(string sql)
+        private void ExecuteScript(string sql, DbManagementContext context)
         {
             if (string.IsNullOrEmpty(sql))
                 return;
@@ -102,14 +135,11 @@ namespace EFCore.DbManagement
 
             foreach (var line in blocks)
             {
-                using (var context = new DbManagementContext(this.Options))
+                using (var command = context.Database.GetDbConnection().CreateCommand())
                 {
-                    using (var command = context.Database.GetDbConnection().CreateCommand())
-                    {
-                        command.CommandText = line;
-                        context.Database.OpenConnection();
-                        command.ExecuteNonQuery();
-                    }
+                    command.CommandText = line;
+                    context.Database.OpenConnection();
+                    command.ExecuteNonQuery();
                 }
             }
         }
@@ -157,15 +187,10 @@ namespace EFCore.DbManagement
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RowId { get; set; }
-
-        [Required] public Guid ID { get; set; }
-        [Required] [MaxLength(50)] public string Name { get; set; }
-        [Required] [MaxLength(50)] public string Type { get; set; }
-        [Required] [MaxLength(50)] public string Schema { get; set; }
+        [Required] [MaxLength(250)] public string Name { get; set; }
         [Required] public DateTime CreatedDate { get; set; }
         [Required] public DateTime ModifiedDate { get; set; }
-        [Required] [MaxLength(50)] public string Hash { get; set; }
-        [Required] [MaxLength(50)] public string Status { get; set; }
-        [Required] public Guid ModelKey { get; set; }
+        [Required] [MaxLength(100)] public string Hash { get; set; }
+        //[Required] public Guid ModelKey { get; set; }
     }
 }

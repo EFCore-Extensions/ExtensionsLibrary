@@ -1,0 +1,1 @@
+Ensure that all '*.sql' files are embedded resources.

@@ -17,6 +17,11 @@ namespace EFCore.Extensions.Scripting
         }
 
         public abstract string GenerateCreateScript();
-        public abstract string GenerateDiffScript(DataModel previousModel);
+        public abstract string GenerateDiffScript(DataModel previousModel, Versioning version);
+
+        void IDisposable.Dispose()
+        {
+        }
+
     }
 }

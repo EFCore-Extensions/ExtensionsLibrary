@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Create\Create.sql" />
+    <None Remove="2_Migrations\000.000.000.00021.sql" />
+    <None Remove="2_Migrations\000.000.000.00022.sql" />
+    <None Remove="2_Migrations\000.000.000.00023.sql" />
+    <None Remove="3_Create\Create.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Create\Create.sql" />
+    <EmbeddedResource Include="2_Migrations\000.000.000.00021.sql" />
+    <EmbeddedResource Include="2_Migrations\000.000.000.00022.sql" />
+    <EmbeddedResource Include="2_Migrations\000.000.000.00023.sql" />
+    <EmbeddedResource Include="3_Create\Create.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,11 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\EFCore.DbManagement\EFCore.DbManagement.csproj" />
+    <ProjectReference Include="..\EFCore.Extensions.DbManagement\EFCore.Extensions.DbManagement.csproj" />
   </ItemGroup>
 
 </Project>
