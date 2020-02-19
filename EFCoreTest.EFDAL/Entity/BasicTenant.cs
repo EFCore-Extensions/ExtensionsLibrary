@@ -1,6 +1,5 @@
 ﻿using EFCore.Extensions;
 using EFCore.Extensions.Attributes;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFCoreTest.EFDAL.Entity

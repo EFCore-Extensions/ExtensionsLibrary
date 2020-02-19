@@ -4,6 +4,9 @@ using System.Text;
 
 namespace EFCore.Extensions.Attributes
 {
+    /// <summary>
+    /// Uniquely identifier a property for migration tracking
+    /// </summary>
     public partial class ModelIdAttribute : System.Attribute
     {
         public ModelIdAttribute(string id)
@@ -14,6 +17,9 @@ namespace EFCore.Extensions.Attributes
             this.ModelId = id;
         }
 
-        public virtual string ModelId { get; set; }
+        /// <summary>
+        /// Any unique non-empty string that identifies a field across the entire model context
+        /// </summary>
+        public virtual string ModelId { get; }
     }
 }

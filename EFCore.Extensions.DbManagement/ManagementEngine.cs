@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Castle.DynamicProxy.Generators;
 
 namespace EFCore.Extensions.DbManagement
 {
@@ -23,6 +23,8 @@ namespace EFCore.Extensions.DbManagement
 
         private System.Reflection.Assembly Assembly { get; set; }
         private string ConnectionString { get; set; } = null;
+        private Version CurrentVersion { get; set; } = new Version("0.0.0.0");
+        private Version LastestVersion { get; set; } = new Version("0.0.0.0");
 
         public virtual void Install(Guid modelKey, string connectionString)
         {
@@ -35,6 +37,11 @@ namespace EFCore.Extensions.DbManagement
             using (var context = new DbManagementContext(this.Options))
             {
                 context.Database.EnsureCreated();
+
+                var version = context.VersionModel.FirstOrDefault(x => x.ModelKey == modelKey);
+                if (version != null)
+                    this.CurrentVersion = new Version(version.Version);
+                this.LastestVersion = this.CurrentVersion;
             }
 
             //Run all scripts
@@ -46,12 +53,11 @@ namespace EFCore.Extensions.DbManagement
                 var version = context.VersionModel.FirstOrDefault(x => x.ModelKey == modelKey);
                 if (version == null)
                 {
-                    version = new VersionModel {ModelKey = modelKey};
+                    version = new VersionModel { ModelKey = modelKey };
                     context.Add(version);
                 }
-
                 version.LastUpdated = DateTime.Now;
-                version.Version = "0.0.0.0";
+                version.Version = this.LastestVersion.ToString();
                 context.SaveChanges();
             }
         }
@@ -61,8 +67,39 @@ namespace EFCore.Extensions.DbManagement
             var scripts = GetScripts(this.Assembly);
 
             var newList = new List<string>();
+
             newList.AddRange(scripts.Where(x => x.Contains(Folder1)).OrderBy(x => x));
-            newList.AddRange(scripts.Where(x => x.Contains(Folder2)).OrderBy(x => x));
+
+            //Only find those that are versioned. TODO: If any others then error
+            var migrations = new Dictionary<Version, string>();
+            foreach (var script in scripts.Where(x => x.Contains(Folder2)))
+            {
+                if (script.Contains(Folder2, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    var index = script.IndexOf(Folder2, StringComparison.CurrentCultureIgnoreCase);
+                    if (index != -1)
+                    {
+                        var fragment = script.Substring(index + Folder2.Length);
+                        if (fragment.EndsWith(".sql"))
+                        {
+                            fragment = fragment.Substring(0, fragment.Length - 4);
+                            if (Version.TryParse(fragment, out Version v))
+                            {
+                                migrations.Add(v, script);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Sort migration scripts
+            foreach (var migrationKey in migrations.Keys.OrderBy(x => x))
+            {
+                newList.Add(migrations[migrationKey]);
+                if (this.LastestVersion < migrationKey)
+                    this.LastestVersion = migrationKey;
+            }
+
             newList.AddRange(scripts.Where(x => x.Contains(Folder3)).OrderBy(x => x));
             newList.AddRange(scripts.Where(x => x.Contains(Folder4)).OrderBy(x => x));
             newList.AddRange(scripts.Where(x => x.Contains(Folder5)).OrderBy(x => x));

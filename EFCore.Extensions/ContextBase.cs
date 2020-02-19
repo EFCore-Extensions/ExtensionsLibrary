@@ -182,6 +182,7 @@ namespace EFCore.Extensions
                 //TODO: Map non-default schemas
                 //https://stackoverflow.com/questions/39499470/dynamically-changing-schema-in-entity-framework-core
                 string schemaName = null;
+                var uniqueModelIdList = new List<string>();
 
                 #region Map all tables
                 foreach (var tableType in this.GetEntityTypeHierarchy())
@@ -340,6 +341,7 @@ namespace EFCore.Extensions
                     foreach (var item in modelIdInfos)
                     {
                         modelBuilder.Entity(tableType.FullName).Property(item.Item2.Name).HasAnnotation("ModelId", item.Item1.ModelId);
+                        uniqueModelIdList.Add(item.Item1.ModelId);
                     }
 
                     #endregion
@@ -684,6 +686,9 @@ namespace EFCore.Extensions
                 }
 
                 #endregion
+
+                if (uniqueModelIdList.Distinct().Count() != uniqueModelIdList.Count)
+                    throw new Exception("All ModelIdAttribute values must be unique.");
 
             }
             catch (Exception ex)

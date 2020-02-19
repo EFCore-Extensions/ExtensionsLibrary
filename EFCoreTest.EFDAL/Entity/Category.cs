@@ -18,7 +18,5 @@ namespace EFCoreTest.EFDAL.Entity
         [MaxLength(50)]
         [ModelId("aytwgsgw6")]
         public virtual string Name { get; set; }
-
     }
-
 }

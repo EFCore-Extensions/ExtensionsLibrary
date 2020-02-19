@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Text;
-using System.Xml.Serialization;
 using EFCore.Extensions.Scripting;
 
 namespace EFCore.Extensions.DbManagement
@@ -25,14 +21,14 @@ namespace EFCore.Extensions.DbManagement
             if (!Directory.Exists(customScriptPath)) Directory.CreateDirectory(customScriptPath);
             if (!Directory.Exists(finializeScriptPath)) Directory.CreateDirectory(finializeScriptPath);
 
-            EnsureReadme(initializePath);
+            EnsureReadme(initializePath, true);
             EnsureReadme(scriptPath);
             EnsureReadme(createPath);
-            EnsureReadme(customScriptPath);
-            EnsureReadme(finializeScriptPath);
+            EnsureReadme(customScriptPath, true);
+            EnsureReadme(finializeScriptPath, true);
 
             //Create SQL generation object
-            var sqlCreate = scriptProvider.GenerateCreateScript(); //EXECUTE THIS SQL BLOCK TO CREATE DATABASE
+            var sqlCreate = scriptProvider.GenerateCreateScript();
             File.WriteAllText(Path.Combine(createPath, "Create.sql"), sqlCreate);
 
             //Load version file
@@ -66,12 +62,22 @@ namespace EFCore.Extensions.DbManagement
             File.WriteAllText(Path.Combine(modelPath, newVersion.GetDiffFileName()) + ".model", modelJson);
         }
 
-        private void EnsureReadme(string folder)
+        private void EnsureReadme(string folder, bool allowCustom = false)
         {
             if (!Directory.Exists(folder))                 return;
             var path = Path.Combine(folder, "ReadMe.txt");
             if (!File.Exists(path))
-                File.WriteAllText(path, "Ensure that all '*.sql' files are embedded resources.");
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("NOTE: Ensure that all '*.sql' files are embedded resources.");
+                if (allowCustom)
+                {
+                    sb.AppendLine();
+                    sb.AppendLine("Add any number of '*.sql' files as embedded resources and they will be run in alphabetical order.");
+                }
+
+                File.WriteAllText(path, sb.ToString());
+            }
         }
     }
 }
